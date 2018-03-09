@@ -11,9 +11,12 @@ namespace Pong
    {
       GraphicsDeviceManager graphics;
       SpriteBatch spriteBatch;
-      private Texture2D playerTexture, enemyTexture;
-      private Sprite playerSprite, enemySprite;
-      private Vector2 playerPosition , enemyPosition;
+      private Texture2D playerTexture, enemyTexture, ballTexture;
+      private Sprite enemySprite, ballSprite;
+      private Player player;
+      private Vector2 playerPosition = new Vector2(20, 20);
+      private Vector2 enemyPosition = new Vector2(800 - 40 , 20);
+      private Vector2 ballPosition = new Vector2(40, 40);
 
       public Game1()
       {
@@ -34,9 +37,6 @@ namespace Pong
       protected override void Initialize()
       {
          // TODO: Add your initialization logic here
-         playerPosition = new Vector2(20, 20); //player spawn point
-         enemyPosition = new Vector2(
-            Window.ClientBounds.Width - 40 , 20);//enemy spawn point
 
          base.Initialize();
       }
@@ -51,8 +51,10 @@ namespace Pong
          spriteBatch = new SpriteBatch(GraphicsDevice);
          playerTexture = Content.Load<Texture2D>("PongPlayer");
          enemyTexture = Content.Load<Texture2D>("PongPlayer");
-         playerSprite = new Sprite(playerTexture, playerPosition, spriteBatch);
+         ballTexture = Content.Load<Texture2D>("Ball");
+         player = new Player(playerTexture, playerPosition, spriteBatch);
          enemySprite = new Sprite(playerTexture, enemyPosition, spriteBatch);
+         ballSprite = new Sprite(ballTexture, ballPosition, spriteBatch);
 
          // TODO: use this.Content to load your game content here
       }
@@ -77,6 +79,10 @@ namespace Pong
             Exit();
 
          // TODO: Add your update logic here
+         player.Update(gameTime);
+
+         
+         
 
          base.Update(gameTime);
       }
@@ -91,8 +97,9 @@ namespace Pong
 
          // TODO: Add your drawing code here
          spriteBatch.Begin();
-         playerSprite.Draw();
+         player.Draw();
          enemySprite.Draw();
+         ballSprite.Draw();
          spriteBatch.End();
 
          base.Draw(gameTime);
