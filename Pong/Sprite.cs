@@ -1,4 +1,7 @@
-﻿using System;
+﻿//Sprite.cs
+//it holds the property of sprite position, texture and spritebatch
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Pong
 {
-   class Sprite
+   public class Sprite
    {
       public Vector2 Position { get; set; }
       public Texture2D Texture { get; set; }
