@@ -1,6 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Diagnostics;
 
 namespace Pong
 {
@@ -9,14 +11,21 @@ namespace Pong
    /// </summary>
    public class Game1 : Game
    {
+      Game1 game;
       GraphicsDeviceManager graphics;
       SpriteBatch spriteBatch;
-      private Texture2D playerTexture, enemyTexture, ballTexture;
-      private Sprite enemySprite, ballSprite;
+      public Texture2D playerTexture, enemyTexture, ballTexture;
+      private Sprite enemySprite;
       private Player player;
+      public Ball ball;
+      public int windowWidth = 800;
+      public int windowHeight = 600;
       private Vector2 playerPosition = new Vector2(20, 20);
       private Vector2 enemyPosition = new Vector2(800 - 40 , 20);
       private Vector2 ballPosition = new Vector2(40, 40);
+      private SpriteFont debugFont;
+      private Vector2  Movement { get; set; }
+      private Vector2 Bounce { get; set; }
 
       public Game1()
       {
@@ -37,6 +46,7 @@ namespace Pong
       protected override void Initialize()
       {
          // TODO: Add your initialization logic here
+         Bounce = new Vector2(2, 2);
 
          base.Initialize();
       }
@@ -54,7 +64,8 @@ namespace Pong
          ballTexture = Content.Load<Texture2D>("Ball");
          player = new Player(playerTexture, playerPosition, spriteBatch);
          enemySprite = new Sprite(playerTexture, enemyPosition, spriteBatch);
-         ballSprite = new Sprite(ballTexture, ballPosition, spriteBatch);
+         ball = new Ball(ballTexture, ballPosition, spriteBatch, game);
+         debugFont = Content.Load<SpriteFont>("DebugFont");
 
          // TODO: use this.Content to load your game content here
       }
@@ -80,9 +91,11 @@ namespace Pong
 
          // TODO: Add your update logic here
          player.Update(gameTime);
+         Movement = BounceLogic();
+         ball.Position += Movement * gameTime.ElapsedGameTime.Milliseconds * 0.1f;
 
-         
-         
+
+
 
          base.Update(gameTime);
       }
@@ -99,11 +112,46 @@ namespace Pong
          spriteBatch.Begin();
          player.Draw();
          enemySprite.Draw();
-         ballSprite.Draw();
+         ball.Draw();
+         WriteDebugInformation();
          spriteBatch.End();
 
          base.Draw(gameTime);
          
+      }
+
+      private void WriteDebugInformation()
+      {
+         string positionInText = string.Format("Position of Ball:" +
+            "({0:0.0}, {1:0.0})", ball.Position.X, ball.Position.Y);
+         string bounceInText = string.Format("Bounce : " +
+            "({0:0.0},{1:0.0})", Bounce.X, Bounce.Y);
+
+         spriteBatch.DrawString(debugFont, positionInText,
+            new Vector2(20, Window.ClientBounds.Height - 100), Color.Red);
+         spriteBatch.DrawString(debugFont, bounceInText,
+            new Vector2(20, Window.ClientBounds.Height - 130), Color.Red);
+      }
+
+
+      private Vector2  BounceLogic()
+      {
+         //if it hit the lower/upper wall
+         if (ball.Position.Y > 600 - ballTexture.Height/2 ||
+           ball.Position.Y < ballTexture.Height/2)
+         {
+            Bounce *= new Vector2(1, -1);
+         }
+         //if it hit the right/left wall
+         if (ball.Position.X > 800 - 5 / 2 ||
+            ball.Position.X < 5 / 2)
+         {
+            Bounce *= new Vector2(-1, 1);
+         }
+         Console.WriteLine(ball.Position.Y);
+         Console.WriteLine(Bounce);
+
+         return Bounce;
       }
    }
 }

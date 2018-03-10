@@ -23,3 +23,4 @@ C:\Users\Benny\Desktop\Project\Monogame Project\Pong\Pong\obj\x86\Debug\Pong.csp
 C:\Users\Benny\Desktop\Project\Monogame Project\Pong\Pong\obj\x86\Debug\Pong.exe
 C:\Users\Benny\Desktop\Project\Monogame Project\Pong\Pong\obj\x86\Debug\Pong.pdb
 C:\Users\Benny\Desktop\Project\Monogame Project\Pong\Pong\bin\Windows\x86\Debug\Content\Ball.xnb
+C:\Users\Benny\Desktop\Project\Monogame Project\Pong\Pong\bin\Windows\x86\Debug\Content\DebugFont.xnb

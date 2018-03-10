@@ -6,5 +6,6 @@
   <SourceFiles>
     <File>C:/Users/Benny/Desktop/Project/Monogame Project/Pong/Pong/Content/PongPlayer.png</File>
     <File>C:/Users/Benny/Desktop/Project/Monogame Project/Pong/Pong/Content/Ball.png</File>
+    <File>C:/Users/Benny/Desktop/Project/Monogame Project/Pong/Pong/Content/DebugFont.spritefont</File>
   </SourceFiles>
 </SourceFileCollection>
