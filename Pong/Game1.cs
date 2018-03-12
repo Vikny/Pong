@@ -25,7 +25,7 @@ namespace Pong
       private Vector2 ballPosition = new Vector2(40, 40);
       private SpriteFont debugFont;
       private Vector2  Movement { get; set; }
-      private Vector2 Bounce { get; set; }
+      public  Vector2 Bounce { get; set; }
 
       public Game1()
       {
@@ -126,30 +126,52 @@ namespace Pong
             "({0:0.0}, {1:0.0})", ball.Position.X, ball.Position.Y);
          string bounceInText = string.Format("Bounce : " +
             "({0:0.0},{1:0.0})", Bounce.X, Bounce.Y);
+         string playerInText = string.Format("Position of Player:" +
+            "({0:0.0}, {1:0.0}", player.Position.X, player.Position.Y);
 
          spriteBatch.DrawString(debugFont, positionInText,
             new Vector2(20, Window.ClientBounds.Height - 100), Color.Red);
          spriteBatch.DrawString(debugFont, bounceInText,
-            new Vector2(20, Window.ClientBounds.Height - 130), Color.Red);
+            new Vector2(20, Window.ClientBounds.Height - 120), Color.Red);
+         spriteBatch.DrawString(debugFont, playerInText,
+            new Vector2(20, Window.ClientBounds.Height - 140), Color.Red);
       }
 
 
       private Vector2  BounceLogic()
       {
-         //if it hit the lower/upper wall
-         if (ball.Position.Y > 600 - ballTexture.Height/2 ||
-           ball.Position.Y < ballTexture.Height/2)
+         //or you can use math.cos and math.sin
+         //asign them to speed and rectangle.intersects if true
+
+         //if it hit the lower/upper wall or 
+         //bottom/top player
+         if (ball.Position.Y > Window.ClientBounds.Height||
+           ball.Position.Y < 0|| 
+           ball.IsTouchingBottom(player)||
+           ball.IsTouchingTop(player))
          {
             Bounce *= new Vector2(1, -1);
          }
-         //if it hit the right/left wall
-         if (ball.Position.X > 800 - 5 / 2 ||
-            ball.Position.X < 5 / 2)
+         //if it hit the right/left wall or
+         //
+         if (ball.Position.X > Window.ClientBounds.Width ||
+            ball.Position.X < 0 || 
+            ball.IsTouchingLeft(player) ||
+            ball.IsTouchingRight(player))
          {
             Bounce *= new Vector2(-1, 1);
          }
-         Console.WriteLine(ball.Position.Y);
+         /*Console.WriteLine("{0} {1}", ball.Position.X, ball.Position.Y);
+         Console.WriteLine(player.Position);
          Console.WriteLine(Bounce);
+         Console.WriteLine("{0} {1}",
+            ball.IsTouchingBottom(player), ball.IsTouchingTop(player));
+         Console.WriteLine("{0} {1}",
+            ball.Bounds.Bottom, ball.Bounds.Top);
+         Console.WriteLine("{0} {1}",
+            ball.IsTouchingLeft(player), ball.IsTouchingRight(player));
+         Console.WriteLine("{0} {1}",
+            ball.Bounds.Right, ball.Bounds.Left); */
 
          return Bounce;
       }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <SourceFile>C:/Users/Benny/Desktop/Project/Monogame Project/Pong/Pong/Content/DebugFont.spritefont</SourceFile>
-  <SourceTime>2017-03-01T22:05:30+07:00</SourceTime>
+  <SourceTime>2018-03-10T18:59:56.3610507+07:00</SourceTime>
   <DestFile>C:/Users/Benny/Desktop/Project/Monogame Project/Pong/Pong/Content/bin/Windows/DebugFont.xnb</DestFile>
-  <DestTime>2018-03-10T16:12:35.2801306+07:00</DestTime>
+  <DestTime>2018-03-11T19:06:29.7426113+07:00</DestTime>
   <Importer>FontDescriptionImporter</Importer>
   <ImporterTime>2017-03-01T22:05:36+07:00</ImporterTime>
   <Processor>FontDescriptionProcessor</Processor>

@@ -17,6 +17,12 @@ namespace Pong
 
       public void Update(GameTime gameTime)
       {
+         playerMove();
+
+      }
+
+      public void playerMove()
+      {
          KeyboardState keyBoardState = Keyboard.GetState();
          if (keyBoardState.IsKeyDown(Keys.Down))
          {
@@ -26,7 +32,6 @@ namespace Pong
          {
             Position -= Vector2.UnitY * 5;
          }
-
       }
    }
 }
