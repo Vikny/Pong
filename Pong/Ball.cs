@@ -8,9 +8,8 @@ namespace Pong
 {
    public class Ball: Sprite
    {
-      Game1 game;
 
-      public Ball(Texture2D texture, Vector2 position, SpriteBatch spriteBatch,Game1 game) 
+      public Ball(Texture2D texture, Vector2 position, SpriteBatch spriteBatch) 
          : base(texture, position, spriteBatch)
       {
       }

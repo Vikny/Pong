@@ -24,3 +24,7 @@ C:\Users\Benny\Desktop\Project\Monogame Project\Pong\Pong\obj\x86\Debug\Pong.exe
 C:\Users\Benny\Desktop\Project\Monogame Project\Pong\Pong\obj\x86\Debug\Pong.pdb
 C:\Users\Benny\Desktop\Project\Monogame Project\Pong\Pong\bin\Windows\x86\Debug\Content\Ball.xnb
 C:\Users\Benny\Desktop\Project\Monogame Project\Pong\Pong\bin\Windows\x86\Debug\Content\DebugFont.xnb
+C:\Users\Benny\Desktop\Project\Monogame Project\Pong\Pong\bin\Windows\x86\Debug\Content\Exit.xnb
+C:\Users\Benny\Desktop\Project\Monogame Project\Pong\Pong\bin\Windows\x86\Debug\Content\Pause.xnb
+C:\Users\Benny\Desktop\Project\Monogame Project\Pong\Pong\bin\Windows\x86\Debug\Content\Resume.xnb
+C:\Users\Benny\Desktop\Project\Monogame Project\Pong\Pong\bin\Windows\x86\Debug\Content\Start.xnb

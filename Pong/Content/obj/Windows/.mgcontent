@@ -7,5 +7,9 @@
     <File>C:/Users/Benny/Desktop/Project/Monogame Project/Pong/Pong/Content/PongPlayer.png</File>
     <File>C:/Users/Benny/Desktop/Project/Monogame Project/Pong/Pong/Content/Ball.png</File>
     <File>C:/Users/Benny/Desktop/Project/Monogame Project/Pong/Pong/Content/DebugFont.spritefont</File>
+    <File>C:/Users/Benny/Desktop/Project/Monogame Project/Pong/Pong/Content/Exit.png</File>
+    <File>C:/Users/Benny/Desktop/Project/Monogame Project/Pong/Pong/Content/Start.png</File>
+    <File>C:/Users/Benny/Desktop/Project/Monogame Project/Pong/Pong/Content/Pause.png</File>
+    <File>C:/Users/Benny/Desktop/Project/Monogame Project/Pong/Pong/Content/Resume.png</File>
   </SourceFiles>
 </SourceFileCollection>

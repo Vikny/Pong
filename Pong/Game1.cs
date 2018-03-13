@@ -11,11 +11,27 @@ namespace Pong
    /// </summary>
    public class Game1 : Game
    {
-      Game1 game;
+      enum GameState
+      {
+         StartMenu,
+         Playing,
+         Pause
+      }
+      public Texture2D startButton;
+      public Texture2D resumeButton;
+      public Texture2D pauseButton;
+      public Texture2D exitButton;
+      public Vector2 startButtonPosition =
+      new Vector2(800 / 2 - 50, 200);
+      public Vector2 exitButtonPosition =
+         new Vector2(800 / 2 - 50, 250);
+      public Vector2 pauseButtonPosition;
+      public Vector2 resumeButtonPosition;
+
       GraphicsDeviceManager graphics;
       SpriteBatch spriteBatch;
       public Texture2D playerTexture, enemyTexture, ballTexture;
-      private Sprite enemySprite;
+      private Sprite enemy;
       private Player player;
       public Ball ball;
       public int windowWidth = 800;
@@ -26,6 +42,15 @@ namespace Pong
       private SpriteFont debugFont;
       private Vector2  Movement { get; set; }
       public  Vector2 Bounce { get; set; }
+      private GameState gameState;
+
+      private Vector2 enemyMovement { get; set; }
+
+      private int PlayerScore { get; set; }
+      private int EnemyScore { get; set; }
+   
+
+      MouseState mouseState, previousMouseState;
 
       public Game1()
       {
@@ -46,7 +71,14 @@ namespace Pong
       protected override void Initialize()
       {
          // TODO: Add your initialization logic here
-         Bounce = new Vector2(2, 2);
+         IsMouseVisible = true;
+         Bounce = new Vector2(4, 4);
+         enemyMovement = new Vector2(0, 3.5f);
+         previousMouseState = mouseState = Mouse.GetState();
+         gameState = GameState.StartMenu;
+         EnemyScore = 0;
+         PlayerScore = 0;
+         
 
          base.Initialize();
       }
@@ -63,9 +95,12 @@ namespace Pong
          enemyTexture = Content.Load<Texture2D>("PongPlayer");
          ballTexture = Content.Load<Texture2D>("Ball");
          player = new Player(playerTexture, playerPosition, spriteBatch);
-         enemySprite = new Sprite(playerTexture, enemyPosition, spriteBatch);
-         ball = new Ball(ballTexture, ballPosition, spriteBatch, game);
+         enemy = new Sprite(playerTexture, enemyPosition, spriteBatch);
+         ball = new Ball(ballTexture, ballPosition, spriteBatch);
          debugFont = Content.Load<SpriteFont>("DebugFont");
+         startButton = Content.Load<Texture2D>("Start");
+         resumeButton = Content.Load<Texture2D>("Resume");
+         exitButton = Content.Load<Texture2D>("Exit");
 
          // TODO: use this.Content to load your game content here
       }
@@ -89,10 +124,26 @@ namespace Pong
          if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
+         mouseState = Mouse.GetState();
+         if(previousMouseState.LeftButton == ButtonState.Pressed &&
+            mouseState.LeftButton == ButtonState.Released)
+         {
+            MouseClicked(mouseState.X, mouseState.Y);
+         }
+
+         previousMouseState = mouseState;
+
+         if(gameState == GameState.Playing)
+         {
+            player.Update(gameTime);
+            Movement = BounceLogic();
+            ball.Position += Movement * gameTime.ElapsedGameTime.Milliseconds * 0.1f;
+            enemyLogic();
+            enemy.Position += enemyMovement * gameTime.ElapsedGameTime.Milliseconds * 0.1f;
+         }
+
          // TODO: Add your update logic here
-         player.Update(gameTime);
-         Movement = BounceLogic();
-         ball.Position += Movement * gameTime.ElapsedGameTime.Milliseconds * 0.1f;
+         
 
 
 
@@ -110,10 +161,17 @@ namespace Pong
 
          // TODO: Add your drawing code here
          spriteBatch.Begin();
+
+         if(gameState == GameState.StartMenu)
+         {
+            spriteBatch.Draw(startButton, startButtonPosition, Color.White);
+            spriteBatch.Draw(exitButton, exitButtonPosition, Color.White);
+         }
          player.Draw();
-         enemySprite.Draw();
+         enemy.Draw();
          ball.Draw();
          WriteDebugInformation();
+         ScoreInformation();
          spriteBatch.End();
 
          base.Draw(gameTime);
@@ -128,6 +186,8 @@ namespace Pong
             "({0:0.0},{1:0.0})", Bounce.X, Bounce.Y);
          string playerInText = string.Format("Position of Player:" +
             "({0:0.0}, {1:0.0}", player.Position.X, player.Position.Y);
+         string logicInText = string.Format("{0} {1}",
+            (ball.Position.Y > enemy.Position.Y), (ball.Position.Y < enemy.Position.Y));
 
          spriteBatch.DrawString(debugFont, positionInText,
             new Vector2(20, Window.ClientBounds.Height - 100), Color.Red);
@@ -135,6 +195,17 @@ namespace Pong
             new Vector2(20, Window.ClientBounds.Height - 120), Color.Red);
          spriteBatch.DrawString(debugFont, playerInText,
             new Vector2(20, Window.ClientBounds.Height - 140), Color.Red);
+      }
+
+      private void ScoreInformation()
+      {
+         string playerScoreInText = string.Format($"Your Score: {PlayerScore}");
+         spriteBatch.DrawString(debugFont, playerScoreInText,
+            new Vector2(100, 10), Color.Black);
+
+         string enemyScoreInText = string.Format($"Enemy Score: {EnemyScore}");
+         spriteBatch.DrawString(debugFont, enemyScoreInText,
+            new Vector2(Window.ClientBounds.Width - 200, 10), Color.Black);
       }
 
 
@@ -148,6 +219,8 @@ namespace Pong
          if (ball.Position.Y > Window.ClientBounds.Height||
            ball.Position.Y < 0|| 
            ball.IsTouchingBottom(player)||
+           ball.IsTouchingTop(player)||
+           ball.IsTouchingBottom(enemy)||
            ball.IsTouchingTop(player))
          {
             Bounce *= new Vector2(1, -1);
@@ -157,10 +230,24 @@ namespace Pong
          if (ball.Position.X > Window.ClientBounds.Width ||
             ball.Position.X < 0 || 
             ball.IsTouchingLeft(player) ||
-            ball.IsTouchingRight(player))
+            ball.IsTouchingRight(player) ||
+            ball.IsTouchingLeft(enemy) ||
+            ball.IsTouchingRight(enemy))
          {
             Bounce *= new Vector2(-1, 1);
          }
+
+         //if it hit the left and right wall, score will increase
+         if(ball.Position.X > Window.ClientBounds.Width)
+         {
+            ++PlayerScore;
+         }
+         if(ball.Position.X < 0)
+         {
+            ++EnemyScore;
+         }
+
+         //Console Debug 
          /*Console.WriteLine("{0} {1}", ball.Position.X, ball.Position.Y);
          Console.WriteLine(player.Position);
          Console.WriteLine(Bounce);
@@ -174,6 +261,61 @@ namespace Pong
             ball.Bounds.Right, ball.Bounds.Left); */
 
          return Bounce;
+      }
+
+      private void enemyLogic()
+      {
+         if (ball.Position.Y + ballTexture.Height/2 < 
+            enemy.Position.Y + enemyTexture.Height/2)
+         {
+            enemyMovement = new Vector2(0, -3.5f);
+         }
+         else
+         {
+            enemyMovement = new Vector2(0, 3.5f);
+         }
+      }
+
+      private void MouseClicked(int x, int y)
+      {
+         Rectangle mouseClickRect = new Rectangle(x, y, 10, 10);
+
+         if(gameState == GameState.StartMenu)
+         {
+            Rectangle startButtonRect = new Rectangle((int)startButtonPosition.X,
+               (int)startButtonPosition.Y, 100, 20);
+            Rectangle exitButtonRect = new Rectangle((int)exitButtonPosition.X,
+               (int)exitButtonPosition.Y, 100, 20);
+
+            if(mouseClickRect.Intersects(startButtonRect))
+            {
+               gameState = GameState.Playing;
+            }
+            if (mouseClickRect.Intersects(exitButtonRect))
+            {
+               Exit();
+            }
+         }
+         if(gameState == GameState.Playing)
+         {
+            Rectangle pauseButtonRect = new Rectangle(0, 0, 70, 70);
+
+            if(mouseClickRect.Intersects(pauseButtonRect))
+            {
+               gameState = GameState.Pause;
+            }
+         }
+
+         if(gameState == GameState.Pause)
+         {
+            Rectangle resumeButtonRect = new Rectangle((int)resumeButtonPosition.X,
+               (int)resumeButtonPosition.Y, 100, 20);
+
+            if(mouseClickRect.Intersects(resumeButtonRect))
+            {
+               gameState = GameState.Playing;
+            }
+         }
       }
    }
 }
